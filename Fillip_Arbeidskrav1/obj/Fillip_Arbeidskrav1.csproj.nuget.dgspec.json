@@ -1,0 +1,67 @@
+{
+  "format": 1,
+  "restore": {
+    "/Users/fillip/RiderProjects/Fillip_Arbeidskrav1/Fillip_Arbeidskrav1/Fillip_Arbeidskrav1.csproj": {}
+  },
+  "projects": {
+    "/Users/fillip/RiderProjects/Fillip_Arbeidskrav1/Fillip_Arbeidskrav1/Fillip_Arbeidskrav1.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/fillip/RiderProjects/Fillip_Arbeidskrav1/Fillip_Arbeidskrav1/Fillip_Arbeidskrav1.csproj",
+        "projectName": "Fillip_Arbeidskrav1",
+        "projectPath": "/Users/fillip/RiderProjects/Fillip_Arbeidskrav1/Fillip_Arbeidskrav1/Fillip_Arbeidskrav1.csproj",
+        "packagesPath": "/Users/fillip/.nuget/packages/",
+        "outputPath": "/Users/fillip/RiderProjects/Fillip_Arbeidskrav1/Fillip_Arbeidskrav1/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/Users/fillip/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net10.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net10.0": {
+            "targetAlias": "net10.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "all"
+        },
+        "SdkAnalysisLevel": "10.0.100"
+      },
+      "frameworks": {
+        "net10.0": {
+          "targetAlias": "net10.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/Users/fillip/.dotnet/sdk/10.0.101/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
