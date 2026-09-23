@@ -7,4 +7,11 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+        <None Include="data\phonebook.csv">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <Link>data\phonebook.csv</Link>
+        </None>
+    </ItemGroup>
+
 </Project>
