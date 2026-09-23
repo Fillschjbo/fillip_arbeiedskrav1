@@ -1,0 +1,16 @@
+/Users/fillip/RiderProjects/Fillip_Arbeidskrav1/Fillip_Arbeidskrav1/bin/Debug/net10.0/Fillip_Arbeidskrav1
+/Users/fillip/RiderProjects/Fillip_Arbeidskrav1/Fillip_Arbeidskrav1/bin/Debug/net10.0/Fillip_Arbeidskrav1.deps.json
+/Users/fillip/RiderProjects/Fillip_Arbeidskrav1/Fillip_Arbeidskrav1/bin/Debug/net10.0/Fillip_Arbeidskrav1.runtimeconfig.json
+/Users/fillip/RiderProjects/Fillip_Arbeidskrav1/Fillip_Arbeidskrav1/bin/Debug/net10.0/Fillip_Arbeidskrav1.dll
+/Users/fillip/RiderProjects/Fillip_Arbeidskrav1/Fillip_Arbeidskrav1/bin/Debug/net10.0/Fillip_Arbeidskrav1.pdb
+/Users/fillip/RiderProjects/Fillip_Arbeidskrav1/Fillip_Arbeidskrav1/obj/Debug/net10.0/Fillip_Arbeidskrav1.GeneratedMSBuildEditorConfig.editorconfig
+/Users/fillip/RiderProjects/Fillip_Arbeidskrav1/Fillip_Arbeidskrav1/obj/Debug/net10.0/Fillip_Arbeidskrav1.AssemblyInfoInputs.cache
+/Users/fillip/RiderProjects/Fillip_Arbeidskrav1/Fillip_Arbeidskrav1/obj/Debug/net10.0/Fillip_Arbeidskrav1.AssemblyInfo.cs
+/Users/fillip/RiderProjects/Fillip_Arbeidskrav1/Fillip_Arbeidskrav1/obj/Debug/net10.0/Fillip_Arbeidskrav1.csproj.CoreCompileInputs.cache
+/Users/fillip/RiderProjects/Fillip_Arbeidskrav1/Fillip_Arbeidskrav1/obj/Debug/net10.0/Fillip_Arbeidskrav1.sourcelink.json
+/Users/fillip/RiderProjects/Fillip_Arbeidskrav1/Fillip_Arbeidskrav1/obj/Debug/net10.0/Fillip_Arbeidskrav1.dll
+/Users/fillip/RiderProjects/Fillip_Arbeidskrav1/Fillip_Arbeidskrav1/obj/Debug/net10.0/refint/Fillip_Arbeidskrav1.dll
+/Users/fillip/RiderProjects/Fillip_Arbeidskrav1/Fillip_Arbeidskrav1/obj/Debug/net10.0/Fillip_Arbeidskrav1.pdb
+/Users/fillip/RiderProjects/Fillip_Arbeidskrav1/Fillip_Arbeidskrav1/obj/Debug/net10.0/Fillip_Arbeidskrav1.genruntimeconfig.cache
+/Users/fillip/RiderProjects/Fillip_Arbeidskrav1/Fillip_Arbeidskrav1/obj/Debug/net10.0/ref/Fillip_Arbeidskrav1.dll
+/Users/fillip/RiderProjects/Fillip_Arbeidskrav1/Fillip_Arbeidskrav1/bin/Debug/net10.0/data/phonebook.csv
