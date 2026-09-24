@@ -24,7 +24,7 @@ class Program
         Console.WriteLine($"{"Field",-12}{"target",-15}{"Matches",-10}{"Comparisons",-12}");
         
         RunLinearSearch(phonebook, Field.Lastname, "Bjerke");
-        RunLinearSearch(phonebook, Field.Lastname, "Mathisen");
+        RunLinearSearch(phonebook, Field.Lastname, "Hansen");
         RunLinearSearch(phonebook, Field.Lastname, "Husebø");
         RunLinearSearch(phonebook, Field.Mobile, "0000000");
         Console.WriteLine();
@@ -33,8 +33,19 @@ class Program
         Console.WriteLine($"{"algorithm",-14}{"shape",-16}{"comparisons",-12}{"swaps",-10}");
         
         RunBubbleSort(phonebookPath, "As supplied", contacts => contacts);
+        RunBubbleSort(phonebookPath, "As supplied", contacts => contacts);
+        RunBubbleSort(phonebookPath, "Already sorted", contacts =>
+            contacts.OrderBy(c => c.LastName, StringComparer.OrdinalIgnoreCase).ToArray());
+        RunBubbleSort(phonebookPath, "Reverse sorted", contacts =>
+            contacts.OrderByDescending(c => c.LastName, StringComparer.OrdinalIgnoreCase).ToArray());
+
         
         RunMergeSort(phonebookPath, "as-supplied", contacts => contacts);
+        RunMergeSort(phonebookPath, "As supplied", contacts => contacts);
+        RunMergeSort(phonebookPath, "Already sorted", contacts =>
+            contacts.OrderBy(c => c.LastName, StringComparer.OrdinalIgnoreCase).ToArray());
+        RunMergeSort(phonebookPath, "Reverse sorted", contacts =>
+            contacts.OrderByDescending(c => c.LastName, StringComparer.OrdinalIgnoreCase).ToArray());
         
         TestEdgeCases();
         TestAllFieldsAndOrders(phonebookPath);
