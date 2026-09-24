@@ -38,7 +38,7 @@ class Program
         
         TestEdgeCases();
         TestAllFieldsAndOrders(phonebookPath);
-        
+        TestBinarySearch(phonebookPath);
     }
 
     static void RunLinearSearch(Phonebook phonebook, Field field, string target)
@@ -155,6 +155,94 @@ class Program
             return true;
         }
 
+        static void TestBinarySearch(string phonebookPath)
+        {
+            Console.WriteLine();
+            Console.WriteLine("--- 3. Binary search, sorted ---");
+            Console.WriteLine($"{"#",-4}{"sorted by",-12}{"target",-15}{"result",-10}{"comparisons",-12}outcome");
+
+            string anyMobile = "45101031";
+            string absentMobileLow = "00000000";
+            string absentMobileHigh = "9999999";
+            string duplicateSurname = "Haugen";
+            string absentSurname = "Husebø";
+            string anyFirstName = "Astrid";
+            
+            //test 1 a real number in phonebook
+            Phonebook pb1 = Phonebook.Load(phonebookPath);
+            pb1.BubbleSort(Field.Mobile, SortOrder.Ascending);
+            int result1 = pb1.BinarySearch(Field.Mobile, anyMobile);
+            PrintTest(1, "Mobile", anyMobile, result1, pb1.SearchComparisons, result1 != -1);
+            
+            //test 2 mobile below lowest
+            Phonebook pb2 = Phonebook.Load(phonebookPath);
+            pb2.BubbleSort(Field.Mobile, SortOrder.Ascending);
+            int result2 = pb2.BinarySearch(Field.Mobile, absentMobileLow);
+            PrintTest(2, "Mobile", absentMobileLow, result2, pb2.SearchComparisons, result2 == -1);
+            
+            //test 3 Mobile above highest
+            Phonebook pb3 = Phonebook.Load(phonebookPath);
+            pb3.BubbleSort(Field.Mobile, SortOrder.Ascending);
+            int result3 = pb3.BinarySearch(Field.Mobile, absentMobileHigh);
+            PrintTest(3, "Mobile", absentMobileHigh, result3, pb3.SearchComparisons, result3 == -1);
+            
+            //test 4 Last name duplicate surname
+            Phonebook pb4 = Phonebook.Load(phonebookPath);
+            pb4.BubbleSort(Field.Lastname, SortOrder.Ascending);
+            int result4 = pb4.BinarySearch(Field.Lastname, duplicateSurname);
+            bool proven4 = ProveLowestIndex(pb4.GetAll(), result4, Field.Lastname);
+            PrintTest(4, "LastName", duplicateSurname, result4, pb4.SearchComparisons, result4 != -1 && proven4);
+            
+            //test 5 Lastname absent
+            Phonebook pb5 = Phonebook.Load(phonebookPath);
+            pb5.BubbleSort(Field.Lastname, SortOrder.Ascending);
+            int result5 = pb5.BinarySearch(Field.Lastname, absentSurname);
+            PrintTest(5, "LastName", absentSurname, result5, pb5.SearchComparisons, result5 == -1);
+            
+            //test 6 first name proven
+            Phonebook pb6 = Phonebook.Load(phonebookPath);
+            pb6.BubbleSort(Field.Firstname, SortOrder.Ascending);
+            int result6 = pb6.BinarySearch(Field.Firstname, anyFirstName);
+            bool proven6 = ProveLowestIndex(pb6.GetAll(), result6, Field.Firstname);
+            PrintTest(6, "FirstName", anyFirstName, result6, pb6.SearchComparisons, result6 != -1 && proven6);
+            
+            //Test 7 any field empty
+            Phonebook empty = Phonebook.FromContacts(Array.Empty<Contact>());
+            int result7 = empty.BinarySearch(Field.Lastname, "anything");
+            PrintTest(7, "Any", "anything", result7, empty.SearchComparisons, result7 == -1);
+            
+            //test 8 any field single single
+            Contact single = new Contact("Ola", "Nordmann", "12345678", DateTime.Now, "street 1", "Oslo");
+            Phonebook one = Phonebook.FromContacts(new[] { single });
+            int result8 = one.BinarySearch(Field.Lastname, "Nordmann");
+            PrintTest(8, "Any", "Nordmann", result8, one.SearchComparisons, result8 == 0);
+            
+            //Phonebook pb9 = Phonebook.Load(phonebookPath);
+           // pb9.BubbleSort(Field.Lastname, SortOrder.Ascending);
+           // int result9 = pb9.BinarySearch(Field.Mobile, absentSurname);
+           // PrintTest(9, "LastName", absentSurname, result5, pb5.SearchComparisons, result5 == -1);
+        }
+        
+        static void PrintTest(int number, string sortedBy, string target, int result, int comparisons, bool passed)
+        {
+            Console.WriteLine($"{number,-4}{sortedBy,-12}{target,-15}{result,-10}{comparisons,-12}{(passed ? "PASS" : "FAIL")}");
+        }
+
+        static bool ProveLowestIndex(Contact[] contacts, int index, Field field)
+        {
+            if (index <= 0)
+            {
+                Console.WriteLine($"  index {index} is at or before array start, no earlier entry to check");
+                return true;
+            }
+            
+            string atIndex = GetFieldValue(contacts[index], field);
+            string before = GetFieldValue(contacts[index - 1], field);
+            
+            Console.WriteLine($"  check: contacts[{index - 1}] = {before}, contacts[{index}] = {atIndex}, different: {before != atIndex}");
+            return !string.Equals(before, atIndex, StringComparison.OrdinalIgnoreCase);
+        }
+        
         static string GetFieldValue(Contact contact, Field field)
         {
             return field switch
