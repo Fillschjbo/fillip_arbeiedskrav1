@@ -14,9 +14,28 @@ public class Phonebook
     {
         _contacts = contacts;
     }
-
+    
+    /// <summary>
+    /// Creates a Phonebook directly from an existing array of contacts, bypassing CSV loading.
+    /// Intended for testing edge cases (empty array, single-element array) that Load cannot produce
+    /// from the fixed 200-row phonebook.csv file.
+    /// Time complexity: O(1). Space complexity: O(1) beyond the array reference passed in.
+    /// </summary>
+    /// <param name="contacts">The contacts to hold. Must not be null.</param>
+    /// <returns>A new Phonebook wrapping the given array.</returns>
     public static Phonebook FromContacts(Contact[] contacts) => new Phonebook(contacts);
-
+    
+    /// <summary>
+    /// Loads all contacts from a CSV file into a new Phonebook. Expects a header row followed by
+    /// comma-separated rows in the order FirstName,LastName,Mobile,Birthday,Street,City.
+    /// Time complexity: O(n), where n is the number of rows in the file.
+    /// Space complexity: O(n), for the resulting Contact array.
+    /// </summary>
+    /// <param name="phonebook">Path to the CSV file to load.</param>
+    /// <returns>A new Phonebook containing every row from the file.</returns>
+    /// <exception cref="FileNotFoundException">Thrown when the file does not exist.</exception>
+    /// <exception cref="DirectoryNotFoundException">Thrown when the containing directory does not exist.</exception>
+    /// <exception cref="FormatException">Thrown when the file has no data rows, a row has the wrong number of fields, or a birthday cannot be parsed.</exception>
     public static Phonebook Load(string phonebook)
     {
         string[] lines;
@@ -70,7 +89,17 @@ public class Phonebook
 
         return new Phonebook(contacts);
     }
-
+    
+    /// <summary>
+    /// Returns the value of the given field for a contact, as a string, so that searching and
+    /// sorting can operate generically across FirstName, LastName, and Mobile without duplicating
+    /// logic per field.
+    /// Time complexity: O(1). Space complexity: O(1).
+    /// </summary>
+    /// <param name="contact">The contact to read from.</param>
+    /// <param name="field">Which property to extract.</param>
+    /// <returns>The string value of the requested field.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when field is not a recognised value.</exception>
     private static string Key(Contact contact, Field field)
     {
         return field switch
@@ -81,7 +110,18 @@ public class Phonebook
             _ => throw new ArgumentOutOfRangeException(nameof(field), field, "unhandled field")
         };
     }
-
+    
+    /// <summary>
+    /// Compares two contacts on the given field, honoring ascending or descending order, and
+    /// increments the sort comparison counter. Used by both sorting algorithms so that comparison
+    /// counting logic exists in only one place.
+    /// Time complexity: O(1). Space complexity: O(1).
+    /// </summary>
+    /// <param name="a">The first contact.</param>
+    /// <param name="b">The second contact.</param>
+    /// <param name="field">Which field to compare on.</param>
+    /// <param name="order">Ascending or descending.</param>
+    /// <returns>Negative if a comes before b, zero if equal, positive if a comes after b, given the requested order.</returns>
     private int CompareContacts(Contact a, Contact b, Field field, SortOrder order)
     {
         _sortComparisons++;
@@ -89,7 +129,17 @@ public class Phonebook
         return order == SortOrder.Ascending ? result : -result;
 
     }
-
+    
+    /// <summary>
+    /// Searches the array from the start, returning every contact whose given field matches the
+    /// target exactly (case-insensitive). Works on unsorted data.
+    /// Time complexity: O(n) in all cases, since every contact must be visited to guarantee all
+    /// matches are found. Space complexity: O(n) worst case, if every contact matches.
+    /// </summary>
+    /// <param name="field">Which field to search on.</param>
+    /// <param name="target">The value to match exactly, ignoring case.</param>
+    /// <returns>Every matching contact, in original order, or an empty array if none match. Never null.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when target is null.</exception>
     public Contact[] LinearSearch(Field field, string target)
     {
         if (target == null)
@@ -111,9 +161,22 @@ public class Phonebook
 
         return matches.ToArray();
     }
-
+    
+    /// <summary>
+    /// Returns the underlying contact array, for inspection and testing.
+    /// Time complexity: O(1). Space complexity: O(1) (returns the existing array, not a copy).
+    /// </summary>
+    /// <returns>The live array of contacts held by this Phonebook.</returns>
     public Contact[] GetAll() => _contacts;
-
+    
+    /// <summary>
+    /// Sorts the array in place on the given field and order, using Bubble Sort with an
+    /// early-exit optimisation that stops as soon as a full pass makes no swaps.
+    /// Time complexity: O(n) best case (already sorted), O(n^2) average and worst case.
+    /// Space complexity: O(1), sorts in place.
+    /// </summary>
+    /// <param name="field">Which field to sort on.</param>
+    /// <param name="order">Ascending or descending.</param>
     public void BubbleSort(Field field, SortOrder order)
     {
         _sortComparisons = 0;
@@ -139,7 +202,16 @@ public class Phonebook
             }
         }
     }
-
+    
+    /// <summary>
+    /// Sorts the array on the given field and order using Merge Sort.
+    /// Time complexity: O(n log n) in all cases (best, average, and worst).
+    /// Space complexity: O(n), for the temporary buffers allocated during each merge step.
+    /// Unlike BubbleSort, this is not a pure in-place sort: merging two sorted halves requires
+    /// copying them into temporary arrays before writing the merged result back.
+    /// </summary>
+    /// <param name="field">Which field to sort on.</param>
+    /// <param name="order">Ascending or descending.</param>
     public void MergeSort(Field field, SortOrder order)
     {
         _sortComparisons = 0;
@@ -151,7 +223,16 @@ public class Phonebook
         }
         MergeSortRecursive(0, _contacts.Length - 1, field, order);
     }
-
+    
+    /// <summary>
+    /// Recursively splits the range [left, right] in half, sorts each half, then merges them.
+    /// Time complexity: O(n log n). Space complexity: O(log n) for the recursion stack,
+    /// plus the O(n) temporary buffers allocated across all Merge calls.
+    /// </summary>
+    /// <param name="left">Start index of the range to sort, inclusive.</param>
+    /// <param name="right">End index of the range to sort, inclusive.</param>
+    /// <param name="field">Which field to sort on.</param>
+    /// <param name="order">Ascending or descending.</param>
     private void MergeSortRecursive(int left, int right, Field field, SortOrder order)
     {
         if (left >= right)
@@ -165,7 +246,18 @@ public class Phonebook
         MergeSortRecursive(mid + 1, right, field, order);
         Merge(left, mid, right, field, order);
     }
-
+    
+    /// <summary>
+    /// Merges two already-sorted sub-ranges, [left, mid] and [mid+1, right], back into the array
+    /// in sorted order, using temporary buffers to hold each half during the merge.
+    /// Time complexity: O(k), where k is the combined length of the two sub-ranges.
+    /// Space complexity: O(k), for the two temporary arrays.
+    /// </summary>
+    /// <param name="left">Start index of the left sub-range.</param>
+    /// <param name="mid">End index of the left sub-range; the right sub-range starts at mid+1.</param>
+    /// <param name="right">End index of the right sub-range.</param>
+    /// <param name="field">Which field to compare on.</param>
+    /// <param name="order">Ascending or descending.</param>
     private void Merge(int left, int mid, int right, Field field, SortOrder order)
     { 
         int leftLength = mid - left + 1;
@@ -209,13 +301,25 @@ public class Phonebook
             _sortMoves++;
         }
     }
-
+    
+    /// <summary>
+    /// Searches the array, which must already be sorted ascending by the given field, for the
+    /// first (lowest-index) occurrence of target. Serves all three fields through the same method.
+    /// Time complexity: O(log n) for the halving search itself, plus O(n) for the precondition
+    /// check that verifies the array is actually sorted by the given field before searching.
+    /// Space complexity: O(1).
+    /// </summary>
+    /// <param name="field">Which field the array must be sorted by, and to search on.</param>
+    /// <param name="target">The value to find, matched exactly and case-insensitively.</param>
+    /// <returns>The lowest index at which target occurs, or -1 if it is not present.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when target is null.</exception>
+    /// <exception cref="InvalidOperationException">Thrown when the array is not sorted ascending by field.</exception>
     public int BinarySearch (Field field, string target)
     {
         if (target == null)
-            { 
-                throw new ArgumentNullException(nameof(target));
-            }
+        { 
+            throw new ArgumentNullException(nameof(target));
+        }
 
         if (!IsSortedBy(field))
         {
@@ -252,7 +356,14 @@ public class Phonebook
         
         return resultIndex;
     }
-
+    
+    /// <summary>
+    /// Checks whether the array is sorted in ascending order by the given field.
+    /// Used as a precondition check before BinarySearch runs.
+    /// Time complexity: O(n). Space complexity: O(1).
+    /// </summary>
+    /// <param name="field">Which field to check ordering on.</param>
+    /// <returns>True if every element is less than or equal to the next, false otherwise.</returns>
     private bool IsSortedBy(Field field)
     {
         for (int i = 0; i < _contacts.Length - 1; i++)
@@ -264,10 +375,19 @@ public class Phonebook
         }
         return true;
     }
-
-public int Comparisons => _comparisons;
+    
+    /// <summary>Number of comparisons made by the most recent LinearSearch call.</summary>
+    public int Comparisons => _comparisons;
+    
+    /// <summary>Number of comparisons made by the most recent BubbleSort or MergeSort call.</summary>
     public int SortComparisons => _sortComparisons;
+    
+    /// <summary>Number of swaps made by the most recent BubbleSort call.</summary>
     public int SortSwaps => _sortSwaps;
+    
+    /// <summary>Number of element moves made by the most recent MergeSort call.</summary>
     public int SortMoves => _sortMoves;
+    
+    /// <summary>Number of comparisons made by the most recent BinarySearch call (excludes the O(n) precondition check).</summary>
     public int SearchComparisons => _searchComparisons;
 }
