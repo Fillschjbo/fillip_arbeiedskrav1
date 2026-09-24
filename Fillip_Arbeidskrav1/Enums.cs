@@ -6,3 +6,9 @@ public enum Field
     Lastname,
     Mobile
 }
+
+public enum SortOrder
+{
+    Ascending,
+    Descending
+}
