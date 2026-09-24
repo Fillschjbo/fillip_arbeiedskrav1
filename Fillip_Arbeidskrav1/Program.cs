@@ -9,14 +9,29 @@ class Program
     {
         string phonebookPath = Path.Combine(AppContext.BaseDirectory, "data", "phonebook.csv");
 
+        Phonebook phonebook;
         try
-        {
-            Phonebook phonebook = Phonebook.Load(phonebookPath);
-            Console.WriteLine(phonebook.Count);
+        { 
+            phonebook = Phonebook.Load(phonebookPath);
         }
-        catch (FileNotFoundException e)
+        catch (Exception e)
         {
-            throw new FileNotFoundException("The file could not be found.", e);
+            Console.WriteLine($"Failed to load phone book: {e.Message}");
+            return;
         }
+        
+        Console.WriteLine("--- 1. Linear search, unsorted ---");
+        Console.WriteLine($"{"Field",-12}{"target",-15}{"Matches",-10}{"Comparisons",-12}");
+        
+        RunLinearSearch(phonebook, Field.Lastname, "Bjerke");
+        RunLinearSearch(phonebook, Field.Lastname, "Mathisen");
+        RunLinearSearch(phonebook, Field.Lastname, "Husebø");
+        RunLinearSearch(phonebook, Field.Mobile, "0000000");
+    }
+
+    static void RunLinearSearch(Phonebook phonebook, Field field, string target)
+    {
+        Contact[] results = phonebook.LinearSearch(field, target);
+        Console.WriteLine($"{field,-12}{target,-15}{results.Length,-10}{phonebook.Comparisons,-12}");
     }
 }

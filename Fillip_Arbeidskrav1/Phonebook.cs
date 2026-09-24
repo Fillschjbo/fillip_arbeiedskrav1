@@ -2,7 +2,7 @@ namespace Fillip_Arbeidskrav1;
 
 public class Phonebook
 {
-    public int Count => _contacts.Length;
+    private int _comparisons;
     
     private readonly Contact[] _contacts;
 
@@ -64,4 +64,38 @@ public class Phonebook
 
         return new Phonebook(contacts);
     }
+
+    private static string Key(Contact contact, Field field)
+    {
+        return field switch
+        {
+            Field.Firstname => contact.FirstName,
+            Field.Lastname => contact.LastName,
+            Field.Mobile => contact.MobileNumber,
+            _ => throw new ArgumentOutOfRangeException(nameof(field), field, "unhandled field")
+        };
+    }
+
+    public Contact[] LinearSearch(Field field, string target)
+    {
+        if (target == null)
+        {
+            throw new ArgumentNullException(nameof(target));
+        }
+
+        _comparisons = 0;
+        var matches = new List<Contact>();
+
+        foreach (Contact contact in _contacts)
+        {
+            _comparisons++;
+            if (string.Equals(Key(contact, field), target, StringComparison.OrdinalIgnoreCase))
+            {
+                matches.Add(contact);
+            }
+        }
+        return matches.ToArray();
+    }
+    
+    public int Comparisons => _comparisons;
 }
