@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Fillip_Arbeidskrav1")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+741d41834cfe5c048bc03c0b5939986fc47e9071")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ee10d77ed94924fca6daf52f5207c66f48d5e3f0")]
 [assembly: System.Reflection.AssemblyProductAttribute("Fillip_Arbeidskrav1")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Fillip_Arbeidskrav1")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

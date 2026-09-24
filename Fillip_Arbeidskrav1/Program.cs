@@ -40,6 +40,14 @@ class Program
         RunBubbleSort(phonebookPath, "Reverse sorted", contacts =>
             contacts.OrderByDescending(c => c.LastName, StringComparer.OrdinalIgnoreCase).ToArray());
         
+        RunMergeSort(phonebookPath, "as-supplied", contacts => contacts);
+        
+        //only for test purposes
+        RunMergeSort(phonebookPath, "already-sorted", contacts =>
+            contacts.OrderBy(c => c.LastName, StringComparer.OrdinalIgnoreCase).ToArray());
+        RunMergeSort(phonebookPath, "reverse-sorted", contacts =>
+            contacts.OrderByDescending(c => c.LastName, StringComparer.OrdinalIgnoreCase).ToArray());
+        
     }
 
     static void RunLinearSearch(Phonebook phonebook, Field field, string target)
@@ -67,6 +75,34 @@ class Program
 
         Console.WriteLine($"{"BubbleSort",-14}{shapeLabel,-16}{phonebook.SortComparisons,-12}{phonebook.SortSwaps,-10}");
         
+        
+        //test purposes only
+        Contact[] result = phonebook.GetAll();
+        for (int i = 0; i < 5; i++)
+        {
+            Console.WriteLine($"  {result[i].LastName}");
+        }
+    }
+
+    static void RunMergeSort(string phonebookPath, string shapeLabel, Func<Contact[], Contact[]> shapedFunc)
+    {
+        Phonebook phonebook;
+        try
+        {
+            phonebook = Phonebook.Load(phonebookPath);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"Failed to load phone book: {e.Message}");
+            return;
+        }
+        
+        Contact[] shaped = shapedFunc(phonebook.GetAll());
+        Array.Copy(shaped, phonebook.GetAll(), shaped.Length);
+        
+        phonebook.MergeSort(Field.Lastname, SortOrder.Ascending);
+
+        Console.WriteLine($"{"MergeSort",-14}{shapeLabel,-16}{phonebook.SortComparisons,-12}{phonebook.SortMoves,-10}");
         
         //test purposes only
         Contact[] result = phonebook.GetAll();
