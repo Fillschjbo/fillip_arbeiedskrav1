@@ -14,6 +14,8 @@ public class Phonebook
         _contacts = contacts;
     }
 
+    public static Phonebook FromContacts(Contact[] contacts) => new Phonebook(contacts);
+
     public static Phonebook Load(string phonebook)
     {
         string[] lines;

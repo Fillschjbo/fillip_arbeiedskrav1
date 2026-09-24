@@ -48,6 +48,8 @@ class Program
         RunMergeSort(phonebookPath, "reverse-sorted", contacts =>
             contacts.OrderByDescending(c => c.LastName, StringComparer.OrdinalIgnoreCase).ToArray());
         
+        TestEdgeCases();
+        
     }
 
     static void RunLinearSearch(Phonebook phonebook, Field field, string target)
@@ -96,14 +98,14 @@ class Program
             Console.WriteLine($"Failed to load phone book: {e.Message}");
             return;
         }
-        
+
         Contact[] shaped = shapedFunc(phonebook.GetAll());
         Array.Copy(shaped, phonebook.GetAll(), shaped.Length);
-        
+
         phonebook.MergeSort(Field.Lastname, SortOrder.Ascending);
 
         Console.WriteLine($"{"MergeSort",-14}{shapeLabel,-16}{phonebook.SortComparisons,-12}{phonebook.SortMoves,-10}");
-        
+
         //test purposes only
         Contact[] result = phonebook.GetAll();
         for (int i = 0; i < 5; i++)
@@ -111,4 +113,27 @@ class Program
             Console.WriteLine($"  {result[i].LastName}");
         }
     }
+     static void TestEdgeCases()
+        {
+            Console.WriteLine();
+            Console.WriteLine("--- Edge case checks ---");
+            
+            Phonebook empty = Phonebook.FromContacts(Array.Empty<Contact>());
+            empty.BubbleSort(Field.Lastname, SortOrder.Ascending);
+            Console.WriteLine($"BubbleSort empty array survived: {empty.GetAll().Length == 0}");
+            
+            empty = Phonebook.FromContacts(Array.Empty<Contact>());
+            empty.MergeSort(Field.Lastname, SortOrder.Ascending);
+            Console.WriteLine($"MergeSort empty array survived: {empty.GetAll().Length == 0}");
+
+            Contact single = new Contact("Ola", "Nordmann", "12345678", DateTime.Now, "Gate 1", "Oslo");
+            
+            Phonebook one = Phonebook.FromContacts(new[] { single });
+            one.BubbleSort(Field.Lastname, SortOrder.Ascending);
+            Console.WriteLine($"BubbleSort single-element survived: {one.GetAll().Length == 1 && one.GetAll()[0] == single}");
+            
+            one = Phonebook.FromContacts(new[] { single });
+            one.MergeSort(Field.Lastname, SortOrder.Ascending);
+            Console.WriteLine($"MergeSort single-element survived: {one.GetAll().Length == 1 && one.GetAll()[0] == single}");
+        }
 }
