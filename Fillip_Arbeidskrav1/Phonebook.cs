@@ -5,13 +5,16 @@ public class Phonebook
     private int _comparisons;
     private int _sortComparisons;
     private int _sortSwaps;
-    
+    private int _sortMoves;
+
     private readonly Contact[] _contacts;
 
     private Phonebook(Contact[] contacts)
     {
         _contacts = contacts;
     }
+
+    public static Phonebook FromContacts(Contact[] contacts) => new Phonebook(contacts);
 
     public static Phonebook Load(string phonebook)
     {
@@ -83,7 +86,7 @@ public class Phonebook
         _sortComparisons++;
         int result = string.Compare(Key(a, field), Key(b, field), StringComparison.OrdinalIgnoreCase);
         return order == SortOrder.Ascending ? result : -result;
-        
+
     }
 
     public Contact[] LinearSearch(Field field, string target)
@@ -104,6 +107,7 @@ public class Phonebook
                 matches.Add(contact);
             }
         }
+
         return matches.ToArray();
     }
 
@@ -113,7 +117,7 @@ public class Phonebook
     {
         _sortComparisons = 0;
         _sortSwaps = 0;
-        
+
         int n = _contacts.Length;
         for (int i = 0; i < n; i++)
         {
@@ -134,8 +138,79 @@ public class Phonebook
             }
         }
     }
-    
-    public int Comparisons => _comparisons;
+
+    public void MergeSort(Field field, SortOrder order)
+    {
+        _sortComparisons = 0;
+        _sortMoves = 0;
+
+        if (_contacts.Length < 2)
+        {
+            return;
+        }
+        MergeSortRecursive(0, _contacts.Length - 1, field, order);
+    }
+
+    private void MergeSortRecursive(int left, int right, Field field, SortOrder order)
+    {
+        if (left >= right)
+        {
+            return;
+        }
+        
+        int mid = left + (right - left) / 2;
+        
+        MergeSortRecursive(left, mid, field, order);
+        MergeSortRecursive(mid + 1, right, field, order);
+        Merge(left, mid, right, field, order);
+    }
+
+    private void Merge(int left, int mid, int right, Field field, SortOrder order)
+    { 
+        int leftLength = mid - left + 1;
+        int rightLength = right -mid;
+
+        var leftTemp = new Contact[leftLength];
+        var rightTemp = new Contact[rightLength];
+        
+        Array.Copy(_contacts, left, leftTemp, 0, leftLength);
+        Array.Copy(_contacts, mid + 1, rightTemp, 0, rightLength);
+
+        int i = 0, j = 0, k = left;
+
+        while (i < leftLength && j < rightLength)
+        {
+            if (CompareContacts(leftTemp[i], rightTemp[j], field, order) <= 0)
+            {
+                _contacts[k]  = leftTemp[i];
+                i++;
+            }
+            else
+            {
+                _contacts[k] = rightTemp[j];
+                j++;
+            }
+            _sortMoves++;
+            k++;
+        }
+
+        while (i < leftLength)
+        {
+            _contacts[k] = leftTemp[i];
+            i++; k++;
+            _sortMoves++;
+        }
+
+        while (j < rightLength)
+        {
+            _contacts[k] = rightTemp[j];
+            j++; k++;
+            _sortMoves++;
+        }
+    }
+
+public int Comparisons => _comparisons;
     public int SortComparisons => _sortComparisons;
     public int SortSwaps => _sortSwaps;
+    public int SortMoves => _sortMoves;
 }
