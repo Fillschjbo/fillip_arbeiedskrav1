@@ -50,6 +50,7 @@ class Program
         TestEdgeCases();
         TestAllFieldsAndOrders(phonebookPath);
         TestBinarySearch(phonebookPath);
+        CompareLinearVsBinary(phonebookPath);
     }
 
     static void RunLinearSearch(Phonebook phonebook, Field field, string target)
@@ -252,6 +253,32 @@ class Program
             
             Console.WriteLine($"  check: contacts[{index - 1}] = {before}, contacts[{index}] = {atIndex}, different: {before != atIndex}");
             return !string.Equals(before, atIndex, StringComparison.OrdinalIgnoreCase);
+        }
+        
+        static void CompareLinearVsBinary(string phonebookPath)
+        {
+            Console.WriteLine();
+            Console.WriteLine("--- Linear vs Binary comparisons, same targets ---");
+            Console.WriteLine($"{"field",-12}{"target",-15}{"linear",-10}{"binary",-10}");
+
+            RunComparison(phonebookPath, Field.Lastname, "Haugen");
+            RunComparison(phonebookPath, Field.Lastname, "Husebø");
+            RunComparison(phonebookPath, Field.Mobile, "45101031");
+            RunComparison(phonebookPath, Field.Firstname, "Astrid");
+        }
+
+        static void RunComparison(string phonebookPath, Field field, string target)
+        {
+            Phonebook linearPb = Phonebook.Load(phonebookPath);
+            linearPb.LinearSearch(field, target);
+            int linearComparisons = linearPb.Comparisons;
+            
+            Phonebook binaryPb = Phonebook.Load(phonebookPath);
+            binaryPb.BubbleSort(field, SortOrder.Ascending);
+            binaryPb.BinarySearch(field, target);
+            int binaryComparisons = binaryPb.SearchComparisons;
+
+            Console.WriteLine($"{field,-12}{target,-15}{linearComparisons,-10}{binaryComparisons,-10}");
         }
         
         static string GetFieldValue(Contact contact, Field field)
