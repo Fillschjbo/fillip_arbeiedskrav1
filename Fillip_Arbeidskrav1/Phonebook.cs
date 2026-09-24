@@ -6,6 +6,7 @@ public class Phonebook
     private int _sortComparisons;
     private int _sortSwaps;
     private int _sortMoves;
+    private int _searchComparisons;
 
     private readonly Contact[] _contacts;
 
@@ -209,8 +210,64 @@ public class Phonebook
         }
     }
 
+    public int BinarySearch (Field field, string target)
+    {
+        if (target == null)
+            { 
+                throw new ArgumentNullException(nameof(target));
+            }
+
+        if (!IsSortedBy(field))
+        {
+            throw new InvalidOperationException($"BinarySearch precondition violated: array is not sorted ascending by {field}.");
+        }
+        
+        _searchComparisons = 0;
+
+        int left = 0;
+        int right = _contacts.Length - 1;
+        int resultIndex = -1;
+
+        while (left <= right)
+        {
+            int mid = left + (right - left) / 2;
+            
+            _searchComparisons++;
+            int comparison = string.Compare(Key(_contacts[mid],field), target, StringComparison.OrdinalIgnoreCase);
+
+            if (comparison == 0)
+            {
+                resultIndex = mid;
+                right = mid - 1;
+            }
+            else if (comparison < 0)
+            {
+                left = mid + 1;
+            }
+            else
+            {
+                right = mid - 1;
+            }
+        }
+        
+        return resultIndex;
+    }
+
+    private bool IsSortedBy(Field field)
+    {
+        for (int i = 0; i < _contacts.Length - 1; i++)
+        {
+            if (string.Compare(Key(_contacts[i], field), Key(_contacts[i + 1], field), StringComparison.OrdinalIgnoreCase) > 0)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
 public int Comparisons => _comparisons;
     public int SortComparisons => _sortComparisons;
     public int SortSwaps => _sortSwaps;
     public int SortMoves => _sortMoves;
+    public int SearchComparisons => _searchComparisons;
 }
