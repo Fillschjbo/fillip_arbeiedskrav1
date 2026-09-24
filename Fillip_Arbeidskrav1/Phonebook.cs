@@ -3,6 +3,8 @@ namespace Fillip_Arbeidskrav1;
 public class Phonebook
 {
     private int _comparisons;
+    private int _sortComparisons;
+    private int _sortSwaps;
     
     private readonly Contact[] _contacts;
 
@@ -76,6 +78,14 @@ public class Phonebook
         };
     }
 
+    private int CompareContacts(Contact a, Contact b, Field field, SortOrder order)
+    {
+        _sortComparisons++;
+        int result = string.Compare(Key(a, field), Key(b, field), StringComparison.OrdinalIgnoreCase);
+        return order == SortOrder.Ascending ? result : -result;
+        
+    }
+
     public Contact[] LinearSearch(Field field, string target)
     {
         if (target == null)
@@ -96,6 +106,36 @@ public class Phonebook
         }
         return matches.ToArray();
     }
+
+    public Contact[] GetAll() => _contacts;
+
+    public void BubbleSort(Field field, SortOrder order)
+    {
+        _sortComparisons = 0;
+        _sortSwaps = 0;
+        
+        int n = _contacts.Length;
+        for (int i = 0; i < n; i++)
+        {
+            bool swapped = false;
+            for (int j = 0; j < n - 1; j++)
+            {
+                if (CompareContacts(_contacts[j], _contacts[j + 1], field, order) > 0)
+                {
+                    (_contacts[j], _contacts[j + 1]) = (_contacts[j + 1], _contacts[j]);
+                    _sortSwaps++;
+                    swapped = true;
+                }
+            }
+
+            if (!swapped)
+            {
+                break;
+            }
+        }
+    }
     
     public int Comparisons => _comparisons;
+    public int SortComparisons => _sortComparisons;
+    public int SortSwaps => _sortSwaps;
 }
