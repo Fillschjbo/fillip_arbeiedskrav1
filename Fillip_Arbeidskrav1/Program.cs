@@ -33,22 +33,11 @@ class Program
         Console.WriteLine($"{"algorithm",-14}{"shape",-16}{"comparisons",-12}{"swaps",-10}");
         
         RunBubbleSort(phonebookPath, "As supplied", contacts => contacts);
-       
-        //only for test purposes
-        RunBubbleSort(phonebookPath, "Allready sorted", contacts =>
-            contacts.OrderBy(c => c.LastName, StringComparer.OrdinalIgnoreCase).ToArray());
-        RunBubbleSort(phonebookPath, "Reverse sorted", contacts =>
-            contacts.OrderByDescending(c => c.LastName, StringComparer.OrdinalIgnoreCase).ToArray());
         
         RunMergeSort(phonebookPath, "as-supplied", contacts => contacts);
         
-        //only for test purposes
-        RunMergeSort(phonebookPath, "already-sorted", contacts =>
-            contacts.OrderBy(c => c.LastName, StringComparer.OrdinalIgnoreCase).ToArray());
-        RunMergeSort(phonebookPath, "reverse-sorted", contacts =>
-            contacts.OrderByDescending(c => c.LastName, StringComparer.OrdinalIgnoreCase).ToArray());
-        
         TestEdgeCases();
+        TestAllFieldsAndOrders(phonebookPath);
         
     }
 
@@ -76,14 +65,6 @@ class Program
         phonebook.BubbleSort(Field.Lastname, SortOrder.Ascending);
 
         Console.WriteLine($"{"BubbleSort",-14}{shapeLabel,-16}{phonebook.SortComparisons,-12}{phonebook.SortSwaps,-10}");
-        
-        
-        //test purposes only
-        Contact[] result = phonebook.GetAll();
-        for (int i = 0; i < 5; i++)
-        {
-            Console.WriteLine($"  {result[i].LastName}");
-        }
     }
 
     static void RunMergeSort(string phonebookPath, string shapeLabel, Func<Contact[], Contact[]> shapedFunc)
@@ -105,13 +86,6 @@ class Program
         phonebook.MergeSort(Field.Lastname, SortOrder.Ascending);
 
         Console.WriteLine($"{"MergeSort",-14}{shapeLabel,-16}{phonebook.SortComparisons,-12}{phonebook.SortMoves,-10}");
-
-        //test purposes only
-        Contact[] result = phonebook.GetAll();
-        for (int i = 0; i < 5; i++)
-        {
-            Console.WriteLine($"  {result[i].LastName}");
-        }
     }
      static void TestEdgeCases()
         {
@@ -135,5 +109,60 @@ class Program
             one = Phonebook.FromContacts(new[] { single });
             one.MergeSort(Field.Lastname, SortOrder.Ascending);
             Console.WriteLine($"MergeSort single-element survived: {one.GetAll().Length == 1 && one.GetAll()[0] == single}");
+        }
+
+        static void TestAllFieldsAndOrders(string PhonebookPath)
+        {
+            Console.WriteLine();
+            Console.WriteLine("--- Correctness across all fields and orders ---");
+
+            foreach (Field field in Enum.GetValues<Field>())
+            {
+                foreach (SortOrder sortOrder in Enum.GetValues<SortOrder>())
+                {
+                    Phonebook pb1 = Phonebook.Load(PhonebookPath);
+                    pb1.BubbleSort(field, sortOrder);
+                    bool bubbleOk = VerifySorted(pb1.GetAll(), field, sortOrder);
+                    
+                    Phonebook pb2 = Phonebook.Load(PhonebookPath);
+                    pb2.MergeSort(field, sortOrder);
+                    bool mergeOk = VerifySorted(pb2.GetAll(), field, sortOrder);
+                    
+                    Console.WriteLine($"{field,-10}{sortOrder,-12}BubbleSort: {(bubbleOk ? "PASS" : "FAIL")}   MergeSort: {(mergeOk ? "PASS" : "FAIL")}");
+                }
+            }
+        }
+     
+        static bool VerifySorted(Contact[] contacts, Field field, SortOrder sortOrder)
+        {
+            for (int i = 0; i < contacts.Length -1; i++)
+            {
+                string a = GetFieldValue(contacts[i], field);
+                string b = GetFieldValue(contacts[i + 1], field);
+                
+                int result = string.Compare(a, b,  StringComparison.OrdinalIgnoreCase);
+                
+                if (sortOrder == SortOrder.Descending)
+                {
+                    result = -result;
+                }
+
+                if (result > 0)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        static string GetFieldValue(Contact contact, Field field)
+        {
+            return field switch
+            {
+                Field.Firstname => contact.FirstName,
+                Field.Lastname => contact.LastName,
+                Field.Mobile => contact.MobileNumber,
+                _ => throw new ArgumentOutOfRangeException(nameof(field))
+            };
         }
 }
